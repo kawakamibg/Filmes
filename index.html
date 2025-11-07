@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minha Lista de Filmes (Letterboxd Clone)</title>
+    <title>Minha Lista de Filmes</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="icon" type="image/x-icon" href="favicon_io.zip">
@@ -72,5 +72,19 @@
     </footer>
 
     <script src="script.js"></script>
+    <div id="movie-detail-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close-btn">&times;</button>
+            <div class="modal-poster">
+                <img id="modal-poster-img" src="" alt="Pôster do Filme">
+            </div>
+            <div class="modal-details">
+                <h2 id="modal-title">Título do Filme</h2>
+                <div id="modal-rating" class="movie-rating">
+                    </div>
+                <p id="modal-review">Aqui vai o comentário completo...</p>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

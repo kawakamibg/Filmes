@@ -7,6 +7,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const tabsContainer = document.querySelector('.tabs');
     const tabContents = document.querySelectorAll('.tab-content');
 
+    // ===== NOVO: VARIÁVEIS DO MODAL =====
+    const modal = document.getElementById('movie-detail-modal');
+    const modalCloseBtn = document.querySelector('.modal-close-btn');
+    const modalPoster = document.getElementById('modal-poster-img');
+    const modalTitle = document.getElementById('modal-title');
+    const modalRating = document.getElementById('modal-rating');
+    const modalReview = document.getElementById('modal-review');
+    // ===================================
+
     // Chave para armazenar os filmes no localStorage
     const STORAGE_KEY = 'letterboxdCloneMovies';
     let moviesData = loadMoviesFromStorage();
@@ -25,6 +34,40 @@ document.addEventListener('DOMContentLoaded', () => {
     function saveMoviesToStorage() {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(moviesData));
     }
+
+    // --- NOVO: Lógica do Modal de Detalhes ---
+    
+    function openDetailModal(movieId) {
+        // 1. Encontrar o filme nos dados
+        const movie = moviesData.watched.find(m => m.id === movieId);
+        if (!movie) return; // Se não achar, não faz nada
+
+        // 2. Preencher o modal com os dados do filme
+        const finalPosterUrl = movie.poster.trim() === '' ? 'https://via.placeholder.com/300x450?text=Sem+Capa' : movie.poster;
+        
+        modalPoster.src = finalPosterUrl;
+        modalPoster.alt = `Pôster de ${movie.title}`;
+        modalTitle.textContent = movie.title;
+        modalRating.innerHTML = `${createStarRating(movie.rating)} (${movie.rating})`;
+        modalReview.textContent = movie.review || 'Sem comentário.';
+
+        // 3. Mostrar o modal
+        modal.classList.add('active');
+    }
+
+    function closeDetailModal() {
+        modal.classList.remove('active');
+    }
+    
+    // Eventos para fechar o modal
+    modalCloseBtn.addEventListener('click', closeDetailModal);
+    
+    modal.addEventListener('click', (e) => {
+        // Fecha o modal apenas se clicar no fundo (overlay)
+        if (e.target === modal) {
+            closeDetailModal();
+        }
+    });
 
     // --- Utilitários e Lógica de Formulário ---
 
@@ -117,7 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="edit-form" style="display:none;">
                         <textarea class="edit-review" placeholder="Novo comentário">${movie.review || ''}</textarea>
                         <select class="edit-rating">
-                            </select>
+                        </select>
                         <button class="action-btn save-btn" data-id="${movie.id}">Salvar</button>
                     </div>
                 </div>
@@ -177,65 +220,82 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // --- Delegação de Eventos de Ação (Editar, Remover, Mover) ---
+    // --- ATUALIZADO: Delegação de Eventos de Ação E Abertura de Modal ---
     document.addEventListener('click', (e) => {
-        const target = e.target.closest('.action-btn');
-        if (!target) return;
-
-        const id = parseInt(target.dataset.id);
-        const type = target.dataset.type || 'watched';
-
-        // Ação de REMOVER
-        if (target.classList.contains('delete-btn')) {
-            if (confirm(`Tem certeza que deseja remover "${target.closest('.movie-card')?.querySelector('h3')?.textContent || target.closest('.watchlist-item')?.querySelector('.watchlist-item-title')?.textContent}"?`)) {
-                moviesData[type] = moviesData[type].filter(item => item.id !== id);
-                saveMoviesToStorage();
-                renderAll();
-            }
-        }
         
-        // Ação de EDITAR (Abrir Formulário)
-        else if (target.classList.contains('edit-btn')) {
-            const card = target.closest('.movie-card');
-            const info = card.querySelector('.movie-info');
-            const editForm = card.querySelector('.edit-form');
-            const isEditing = editForm.style.display !== 'none';
+        const actionBtn = e.target.closest('.action-btn');
+        const movieCard = e.target.closest('.movie-card');
 
-            editForm.style.display = isEditing ? 'none' : 'block';
-            target.innerHTML = isEditing ? '<i class="fas fa-pen"></i> Editar' : '<i class="fas fa-times"></i> Cancelar';
-            info.querySelector('.movie-review').style.display = isEditing ? 'block' : 'none';
-            info.querySelector('.movie-rating').style.display = isEditing ? 'block' : 'none';
-        }
+        // --- LÓGICA DOS BOTÕES DE AÇÃO (Editar, Deletar, etc.) ---
+        if (actionBtn) {
+            const id = parseInt(actionBtn.dataset.id);
+            const type = actionBtn.dataset.type || 'watched';
 
-        // Ação de SALVAR EDIÇÃO
-        else if (target.classList.contains('save-btn')) {
-            const card = target.closest('.movie-card');
-            const reviewTextarea = card.querySelector('.edit-review');
-            const ratingSelect = card.querySelector('.edit-rating');
-
-            const movieIndex = moviesData.watched.findIndex(m => m.id === id);
-            if (movieIndex > -1) {
-                moviesData.watched[movieIndex].review = reviewTextarea.value;
-                moviesData.watched[movieIndex].rating = parseFloat(ratingSelect.value);
-                saveMoviesToStorage();
-                renderAll();
+            // Ação de REMOVER
+            if (actionBtn.classList.contains('delete-btn')) {
+                if (confirm(`Tem certeza que deseja remover "${actionBtn.closest('.movie-card')?.querySelector('h3')?.textContent || actionBtn.closest('.watchlist-item')?.querySelector('.watchlist-item-title')?.textContent}"?`)) {
+                    moviesData[type] = moviesData[type].filter(item => item.id !== id);
+                    saveMoviesToStorage();
+                    renderAll();
+                }
             }
+            
+            // Ação de EDITAR (Abrir Formulário)
+            else if (actionBtn.classList.contains('edit-btn')) {
+                const card = actionBtn.closest('.movie-card');
+                const info = card.querySelector('.movie-info');
+                const editForm = card.querySelector('.edit-form');
+                const isEditing = editForm.style.display !== 'none';
+
+                editForm.style.display = isEditing ? 'none' : 'block';
+                actionBtn.innerHTML = isEditing ? '<i class="fas fa-pen"></i> Editar' : '<i class="fas fa-times"></i> Cancelar';
+                info.querySelector('.movie-review').style.display = isEditing ? 'block' : 'none';
+                info.querySelector('.movie-rating').style.display = isEditing ? 'block' : 'none';
+            }
+
+            // Ação de SALVAR EDIÇÃO
+            else if (actionBtn.classList.contains('save-btn')) {
+                const card = actionBtn.closest('.movie-card');
+                const reviewTextarea = card.querySelector('.edit-review');
+                const ratingSelect = card.querySelector('.edit-rating');
+
+                const movieIndex = moviesData.watched.findIndex(m => m.id === id);
+                if (movieIndex > -1) {
+                    moviesData.watched[movieIndex].review = reviewTextarea.value;
+                    moviesData.watched[movieIndex].rating = parseFloat(ratingSelect.value);
+                    saveMoviesToStorage();
+                    renderAll();
+                }
+            }
+
+            // Ação de MARCAR COMO ASSISTIDO (mover de watchlist para watched)
+            else if (actionBtn.classList.contains('mark-watched-btn')) {
+                const itemIndex = moviesData.watchlist.findIndex(item => item.id === id);
+                if (itemIndex > -1) {
+                    const itemToMove = moviesData.watchlist.splice(itemIndex, 1)[0];
+                    
+                    itemToMove.type = 'watched';
+                    itemToMove.rating = 3.0; // Pede uma nota inicial para ser editada
+                    itemToMove.review = `Assistido após estar na Watchlist. Avalie e comente!`;
+                    
+                    moviesData.watched.unshift(itemToMove);
+                    saveMoviesToStorage();
+                    renderAll();
+                    switchTab('watched'); // Troca para a aba de assistidos
+                }
+            }
+            return; // Importante: Se clicou num botão de ação, não faz mais nada
         }
 
-        // Ação de MARCAR COMO ASSISTIDO (mover de watchlist para watched)
-        else if (target.classList.contains('mark-watched-btn')) {
-            const itemIndex = moviesData.watchlist.findIndex(item => item.id === id);
-            if (itemIndex > -1) {
-                const itemToMove = moviesData.watchlist.splice(itemIndex, 1)[0];
-                
-                itemToMove.type = 'watched';
-                itemToMove.rating = 3.0; // Pede uma nota inicial para ser editada
-                itemToMove.review = `Assistido após estar na Watchlist. Avalie e comente!`;
-                
-                moviesData.watched.unshift(itemToMove);
-                saveMoviesToStorage();
-                renderAll();
-                switchTab('watched'); // Troca para a aba de assistidos
+        // --- LÓGICA DE ABRIR O MODAL ---
+        // Se o clique foi dentro de um card, MAS NÃO foi num botão de ação...
+        if (movieCard) {
+            // ...e também NÃO foi dentro do formulário de edição...
+            const inEditForm = e.target.closest('.edit-form');
+            if (!inEditForm) {
+                // ...então abra o modal!
+                const id = parseInt(movieCard.dataset.id);
+                openDetailModal(id);
             }
         }
     });
@@ -276,4 +336,3 @@ document.addEventListener('DOMContentLoaded', () => {
     toggleWatchedFields(); // Configura o formulário inicial
     switchTab('watched'); // Começa na aba 'Assistidos'
 });
-

@@ -293,3 +293,110 @@ footer {
         grid-template-columns: 1fr;
     }
 }
+/* ========= ESTILOS DO MODAL DE DETALHE ========= */
+
+.modal-overlay {
+    display: none; /* Começa escondido */
+    position: fixed; /* Cobre a tela inteira */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.85); /* Fundo escuro */
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Classe 'active' que o JS vai usar para mostrar o modal */
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal-content {
+    background-color: var(--bg-secondary);
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    position: relative;
+    
+    /* Layout Lado a Lado (Banner + Review) */
+    display: flex;
+    gap: 25px;
+
+    /* Tamanho do Modal */
+    max-width: 900px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.modal-close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 2.5em;
+    cursor: pointer;
+    line-height: 1;
+}
+.modal-close-btn:hover {
+    color: var(--text-primary);
+}
+
+/* O "Banner" Aumentado */
+.modal-poster img {
+    width: 300px; /* Largura fixa para o banner */
+    height: auto;
+    border-radius: 8px;
+}
+
+/* Os Detalhes ao Lado */
+.modal-details {
+    flex: 1; /* Ocupa o espaço restante */
+}
+
+.modal-details h2 {
+    margin-top: 0;
+    color: var(--accent-color);
+    font-size: 2.2em;
+}
+
+.modal-details #modal-rating {
+    font-size: 1.3em; /* Estrelas maiores */
+    margin-bottom: 20px;
+}
+
+.modal-details #modal-review {
+    font-size: 1.1em;
+    color: var(--text-primary);
+    line-height: 1.7;
+    white-space: pre-wrap; /* Preserva quebras de linha no review */
+}
+
+
+/* Responsividade do Modal */
+@media (max-width: 768px) {
+    .modal-content {
+        flex-direction: column; /* Empilha em telas pequenas */
+        max-height: 90vh;
+    }
+    .modal-poster img {
+        width: 100%;
+        max-width: 250px; /* Limita o poster no modo coluna */
+        margin: 0 auto; /* Centraliza */
+    }
+    .modal-details h2 {
+        font-size: 1.8em;
+    }
+}
+
+/* === Alteração no CSS existente === */
+/* Isso faz o card parecer clicável, como você pediu (o "link") */
+.movie-card .movie-poster,
+.movie-card .movie-info h3,
+.movie-card .movie-info .movie-rating {
+    cursor: pointer;
+}
