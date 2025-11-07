@@ -1,11 +1,76 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Minha Lista de Filmes (Letterboxd Clone)</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="favicon_io.zip">
 </head>
 <body>
-    
+    <header>
+        <h1>🎬 Minha Lista de Filmes</h1>
+        <p>Filmes assistidos e para assistir (Inspirado no Letterboxd)</p>
+    </header>
+
+    <main>
+        <section id="add-movie">
+            <h2>Adicionar Novo Item</h2>
+            <form id="movie-form">
+                <input type="text" id="movie-title" placeholder="Título do Filme/Série" required>
+                <input type="text" id="movie-poster-url" placeholder="URL da Capa do Filme (opcional)">
+                
+                <select id="item-type" required>
+                    <option value="watched" selected>Filme Assistido (Avaliado)</option>
+                    <option value="watchlist">Watchlist (Quero Assistir)</option>
+                </select>
+
+                <div id="watched-fields">
+                    <select id="movie-rating" required>
+                        <option value="" disabled selected>Nota (0.5 a 5 estrelas)</option>
+                        <option value="0.5">★☆☆☆☆ (0.5)</option>
+                        <option value="1.0">★☆☆☆☆ (1.0)</option>
+                        <option value="1.5">★½☆☆☆ (1.5)</option>
+                        <option value="2.0">★★☆☆☆ (2.0)</option>
+                        <option value="2.5">★★½☆☆ (2.5)</option>
+                        <option value="3.0">★★★☆☆ (3.0)</option>
+                        <option value="3.5">★★★½☆ (3.5)</option>
+                        <option value="4.0">★★★★☆ (4.0)</option>
+                        <option value="4.5">★★★★½ (4.5)</option>
+                        <option value="5.0">★★★★★ (5.0)</option>
+                    </select>
+                    <textarea id="movie-review" placeholder="Seu comentário (opcional)"></textarea>
+                </div>
+                
+                <button type="submit">Adicionar</button>
+            </form>
+        </section>
+        
+        <hr>
+
+        <div class="tabs">
+            <button class="tab-button active" data-tab="watched">Assistidos</button>
+            <button class="tab-button" data-tab="watchlist">Watchlist</button>
+        </div>
+
+        <section id="watched-list-section" class="tab-content active">
+            <h2>Meus Filmes Assistidos</h2>
+            <div id="movie-grid" class="movie-grid">
+                </div>
+        </section>
+
+        <section id="watchlist-section" class="tab-content">
+            <h2>Minha Watchlist</h2>
+            <div id="watchlist-container" class="watchlist-container">
+                </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Letterboxd Style List | Desenvolvido por Você</p>
+    </footer>
+
+    <script src="script.js"></script>
 </body>
 </html>
