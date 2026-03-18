@@ -1,4 +1,21 @@
+// ================= VERIFICAÇÃO DE LOGIN =================
+// Checa se o usuário está logado antes de carregar a página principal
+const currentUser = localStorage.getItem('letterboxd_user');
+if (!currentUser) {
+    // Se não tiver usuário salvo, expulsa para a tela de login
+    window.location.href = 'login.html';
+}
+// ========================================================
 document.addEventListener('DOMContentLoaded', () => {
+    // Lógica do botão Sair (Logout)
+    const logoutBtn = document.getElementById('logout-btn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            // Remove o usuário do navegador e volta pro login
+            localStorage.removeItem('letterboxd_user');
+            window.location.href = 'login.html';
+        });
+    }
     const form = document.getElementById('movie-form');
     const movieGrid = document.getElementById('movie-grid');
     const watchlistContainer = document.getElementById('watchlist-container');

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Minha Lista de Filmes</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="favicon_io.zip">
+</head>
+<body class="login-body">
+    <div class="login-container">
+        <div class="login-box">
+            <h1>🎬 Entrar</h1>
+            <p>Faça login para gerenciar sua lista</p>
+            
+            <form id="login-form">
+                <input type="text" id="username" placeholder="Nome de usuário (ex: admin)" required>
+                <input type="password" id="password" placeholder="Senha" required>
+                <button type="submit">Acessar Minha Lista</button>
+            </form>
+            
+            <p class="login-footer">Para testar, digite qualquer usuário e senha.</p>
+        </div>
+    </div>
+
+    <script>
+        // Script simples para gerenciar o login falso
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            
+            // Salva no navegador que o usuário está logado
+            localStorage.setItem('letterboxd_user', username);
+            
+            // Redireciona para o site principal de filmes
+            window.location.href = 'index.html';
+        });
+    </script>
+</body>
+</html>
