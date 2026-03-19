@@ -333,22 +333,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById(`${targetTab}-list-section` || `${targetTab}-section`).classList.add('active');
     }
 
-
-    // --- Inicialização e Dados de Exemplo ---
-    if (moviesData.watched.length === 0 && moviesData.watchlist.length === 0) {
-        moviesData = {
-            watched: [
-                { id: Date.now() + 1, title: "O Poderoso Chefão", poster: "https://image.tmdb.org/t/p/w500/oE8K1E84qHwA200pWbM6q0nO2.jpg", rating: 5.0, review: "Uma obra-prima atemporal. A cinematografia e as atuações são impecáveis.", type: 'watched' },
-                { id: Date.now() + 2, title: "Interestelar", poster: "https://image.tmdb.org/t/p/w500/gO9G5oXlQ2B0TdtWfL5PRjrvifc.jpg", rating: 4.5, review: "Visualmente deslumbrante e com uma trilha sonora emocionante. Um filme para pensar.", type: 'watched' },
-            ],
-            watchlist: [
-                { id: Date.now() + 3, title: "Duna: Parte Dois", poster: "https://image.tmdb.org/t/p/w500/dtB7yYn72E8E4G0R1G59j2xU4tB.jpg", type: 'watchlist' },
-                { id: Date.now() + 4, title: "Parasita", poster: "https://image.tmdb.org/t/p/w500/7IiTTgloJzvGI1TAYymCykUSyJv.jpg", type: 'watchlist' },
-            ]
-        };
-        saveMoviesToStorage();
-    }
-
     renderAll();
     toggleWatchedFields(); // Configura o formulário inicial
     switchTab('watched'); // Começa na aba 'Assistidos'
