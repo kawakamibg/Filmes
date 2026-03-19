@@ -9,18 +9,26 @@
     <link rel="icon" type="image/x-icon" href="https://a.ltrbxd.com/logos/letterboxd-decal-dots-pos-rgb.svg">
 </head>
 <body>
-    <header style="position: relative;">
+   <header style="position: relative;">
         <h1>🎬 Minha Lista de Filmes</h1>
         <p>Filmes assistidos e para assistir (Inspirado no Letterboxd)</p>
-        <button id="logout-btn" class="logout-btn">Sair</button>
+        
+        <div class="header-actions" style="position: absolute; top: 20px; right: 20px; display: flex; gap: 10px;">
+            <a href="perfil.html" class="profile-btn"><i class="fas fa-user"></i> Meu Perfil</a>
+            <button id="logout-btn" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Sair</button>
+        </div>
     </header>
 
     <main>
-        <section id="add-movie">
+       <section id="add-movie">
             <h2>Adicionar Novo Item</h2>
             <form id="movie-form">
-                <input type="text" id="movie-title" placeholder="Título do Filme/Série" required>
-                <input type="text" id="movie-poster-url" placeholder="URL da Capa do Filme (opcional)">
+                <div style="position: relative;">
+                    <input type="text" id="movie-title" placeholder="Digite o Título do Filme para buscar..." autocomplete="off" required>
+                    <div id="tmdb-results" class="tmdb-results-container"></div>
+                </div>
+                
+                <input type="text" id="movie-poster-url" placeholder="URL da Capa (Preenchido automaticamente)" readonly required>
                 
                 <select id="item-type" required>
                     <option value="watched" selected>Filme Assistido (Avaliado)</option>
@@ -44,10 +52,9 @@
                     <textarea id="movie-review" placeholder="Seu comentário (opcional)"></textarea>
                 </div>
                 
-                <button type="submit">Adicionar</button>
+                <button type="submit">Adicionar à Lista</button>
             </form>
         </section>
-        
         <hr>
 
         <div class="tabs">

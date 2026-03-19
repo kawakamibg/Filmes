@@ -23,6 +23,88 @@ document.addEventListener('DOMContentLoaded', () => {
     const watchedFields = document.getElementById('watched-fields');
     const tabsContainer = document.querySelector('.tabs');
     const tabContents = document.querySelectorAll('.tab-content');
+    // ================= INTEGRAÇÃO TMDB (BUSCA INTELIGENTE) =================
+    const TMDB_API_KEY = '14ee92810316ee5630394dfd5053e218';
+    const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
+    const TMDB_IMG_URL = 'https://image.tmdb.org/t/p/w500';
+
+    const inputTitulo = document.getElementById('movie-title');
+    const inputPoster = document.getElementById('movie-poster-url');
+    const resultsContainer = document.getElementById('tmdb-results');
+    let searchTimeout;
+
+    // Fica "escutando" o que você digita no campo de título
+    inputTitulo.addEventListener('input', (e) => {
+        clearTimeout(searchTimeout); // Evita buscar a cada letra, espera você parar de digitar
+        const query = e.target.value.trim();
+        
+        // Só busca se tiver 3 letras ou mais
+        if (query.length < 3) {
+            resultsContainer.style.display = 'none';
+            return;
+        }
+
+        // Espera meio segundo depois que você parar de digitar para fazer a busca
+        searchTimeout = setTimeout(() => {
+            buscarFilmesTMDB(query);
+        }, 500); 
+    });
+
+    async function buscarFilmesTMDB(query) {
+        try {
+            const resposta = await fetch(`${TMDB_BASE_URL}/search/movie?api_key=${TMDB_API_KEY}&language=pt-BR&query=${encodeURIComponent(query)}`);
+            const dados = await resposta.json();
+            
+            if (dados.results && dados.results.length > 0) {
+                mostrarResultados(dados.results.slice(0, 5)); // Mostra os 5 primeiros resultados
+            } else {
+                resultsContainer.style.display = 'none';
+            }
+        } catch (erro) {
+            console.error('Erro ao buscar no TMDB:', erro);
+        }
+    }
+
+    function mostrarResultados(filmes) {
+        resultsContainer.innerHTML = ''; // Limpa resultados antigos
+        
+        filmes.forEach(filme => {
+            // Pega o ano de lançamento
+            const anoLancamento = filme.release_date ? filme.release_date.split('-')[0] : 'Ano desconhecido';
+            // Monta a URL da capa
+            const posterPath = filme.poster_path ? TMDB_IMG_URL + filme.poster_path : 'https://via.placeholder.com/40x60?text=Sem+Capa';
+            
+            // Cria o item na listinha
+            const item = document.createElement('div');
+            item.classList.add('tmdb-result-item');
+            item.innerHTML = `
+                <img src="${posterPath}" alt="Capa" class="tmdb-result-poster">
+                <div class="tmdb-result-info">
+                    <h4>${filme.title}</h4>
+                    <p>${anoLancamento}</p>
+                </div>
+            `;
+            
+            // O que acontece quando você clica em um filme da lista:
+            item.addEventListener('click', () => {
+                inputTitulo.value = filme.title; // Preenche o título oficial
+                inputPoster.value = posterPath;  // Preenche a URL da capa
+                resultsContainer.style.display = 'none'; // Esconde a listinha
+            });
+            
+            resultsContainer.appendChild(item);
+        });
+        
+        resultsContainer.style.display = 'block'; // Mostra a listinha
+    }
+
+    // Esconde a lista de resultados se você clicar fora dela
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('#add-movie')) {
+            resultsContainer.style.display = 'none';
+        }
+    });
+    // ================= FIM DA INTEGRAÇÃO TMDB =================
 
     // ===== NOVO: VARIÁVEIS DO MODAL =====
     const modal = document.getElementById('movie-detail-modal');

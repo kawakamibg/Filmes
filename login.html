@@ -14,25 +14,45 @@
             <p>Faça login para gerenciar sua lista</p>
             
             <form id="login-form">
-                <input type="text" id="username" placeholder="Nome de usuário (ex: admin)" required>
+                <input type="text" id="username" placeholder="Nome de usuário" required>
                 <input type="password" id="password" placeholder="Senha" required>
                 <button type="submit">Acessar Minha Lista</button>
             </form>
             
-            <p class="login-footer">Para testar, digite qualquer usuário e senha.</p>
+            <p class="login-footer" style="margin-top: 20px;">
+                Não tem uma conta? <a href="cadastro.html" style="color: var(--accent-color); text-decoration: none; font-weight: bold;">Cadastre-se aqui</a>.
+            </p>
         </div>
     </div>
 
     <script>
-        // Script simples para gerenciar o login falso
         document.getElementById('login-form').addEventListener('submit', function(e) {
             e.preventDefault();
-            const username = document.getElementById('username').value;
             
-            // Salva no navegador que o usuário está logado
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            
+            // 1. Puxa os usuários cadastrados
+            let users = JSON.parse(localStorage.getItem('letterboxd_users_db')) || [];
+            
+            // 2. Procura o usuário específico
+            const foundUser = users.find(u => u.username === username);
+            
+            // 3. Validações
+            if (!foundUser) {
+                alert('Usuário não encontrado. Verifique o nome ou cadastre-se!');
+                return;
+            }
+            
+            if (foundUser.password !== password) {
+                alert('Senha incorreta! Tente novamente.');
+                return;
+            }
+            
+            // 4. Se deu tudo certo, cria a "sessão" (salva quem está logado)
             localStorage.setItem('letterboxd_user', username);
             
-            // Redireciona para o site principal de filmes
+            // 5. Redireciona para o site principal
             window.location.href = 'index.html';
         });
     </script>
